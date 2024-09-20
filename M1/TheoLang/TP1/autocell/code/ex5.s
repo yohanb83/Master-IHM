@@ -8,7 +8,18 @@
 
 l1:
 	invoke 3, 2, 3
+	invoke 5, 6, 0
+	goto_eq birth, r6, r0
+	goto_ne death, r6, r0
+	
+birth:
 	invoke 4, 1, 0
+	goto_lt l2, r2, r4
+	goto_lt l3, r3, r5
+	goto lfin
+	
+death:
+	invoke 4, 0, 0
 	goto_lt l2, r2, r4
 	goto_lt l3, r3, r5
 	goto lfin
