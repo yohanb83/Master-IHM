@@ -1,0 +1,273 @@
+   0  $accept : %entry% $end
+
+   1  program : INT DIMENSIONS OF config END opt_statements EOF
+
+   2  config : INT DOT_DOT INT
+   3         | fields
+
+   4  fields : field
+   5         | fields COMMA field
+
+   6  field : ID OF INT DOT_DOT INT
+
+   7  opt_statements :
+   8                 | statement
+
+   9  statement : cell ASSIGN expression
+
+  10  cell : LBRACKET INT COMMA INT RBRACKET
+
+  11  expression : cell
+  12             | INT
+
+  13  %entry% : '\001' program
+
+state 0
+	$accept : . %entry% $end  (0)
+
+	'\001'  shift 1
+	.  error
+
+	%entry%  goto 2
+
+
+state 1
+	%entry% : '\001' . program  (13)
+
+	INT  shift 3
+	.  error
+
+	program  goto 4
+
+
+state 2
+	$accept : %entry% . $end  (0)
+
+	$end  accept
+
+
+state 3
+	program : INT . DIMENSIONS OF config END opt_statements EOF  (1)
+
+	DIMENSIONS  shift 5
+	.  error
+
+
+state 4
+	%entry% : '\001' program .  (13)
+
+	.  reduce 13
+
+
+state 5
+	program : INT DIMENSIONS . OF config END opt_statements EOF  (1)
+
+	OF  shift 6
+	.  error
+
+
+state 6
+	program : INT DIMENSIONS OF . config END opt_statements EOF  (1)
+
+	ID  shift 7
+	INT  shift 8
+	.  error
+
+	config  goto 9
+	fields  goto 10
+	field  goto 11
+
+
+state 7
+	field : ID . OF INT DOT_DOT INT  (6)
+
+	OF  shift 12
+	.  error
+
+
+state 8
+	config : INT . DOT_DOT INT  (2)
+
+	DOT_DOT  shift 13
+	.  error
+
+
+state 9
+	program : INT DIMENSIONS OF config . END opt_statements EOF  (1)
+
+	END  shift 14
+	.  error
+
+
+state 10
+	config : fields .  (3)
+	fields : fields . COMMA field  (5)
+
+	COMMA  shift 15
+	END  reduce 3
+
+
+state 11
+	fields : field .  (4)
+
+	.  reduce 4
+
+
+state 12
+	field : ID OF . INT DOT_DOT INT  (6)
+
+	INT  shift 16
+	.  error
+
+
+state 13
+	config : INT DOT_DOT . INT  (2)
+
+	INT  shift 17
+	.  error
+
+
+state 14
+	program : INT DIMENSIONS OF config END . opt_statements EOF  (1)
+	opt_statements : .  (7)
+
+	LBRACKET  shift 18
+	EOF  reduce 7
+
+	opt_statements  goto 19
+	statement  goto 20
+	cell  goto 21
+
+
+state 15
+	fields : fields COMMA . field  (5)
+
+	ID  shift 7
+	.  error
+
+	field  goto 22
+
+
+state 16
+	field : ID OF INT . DOT_DOT INT  (6)
+
+	DOT_DOT  shift 23
+	.  error
+
+
+state 17
+	config : INT DOT_DOT INT .  (2)
+
+	.  reduce 2
+
+
+state 18
+	cell : LBRACKET . INT COMMA INT RBRACKET  (10)
+
+	INT  shift 24
+	.  error
+
+
+state 19
+	program : INT DIMENSIONS OF config END opt_statements . EOF  (1)
+
+	EOF  shift 25
+	.  error
+
+
+state 20
+	opt_statements : statement .  (8)
+
+	.  reduce 8
+
+
+state 21
+	statement : cell . ASSIGN expression  (9)
+
+	ASSIGN  shift 26
+	.  error
+
+
+state 22
+	fields : fields COMMA field .  (5)
+
+	.  reduce 5
+
+
+state 23
+	field : ID OF INT DOT_DOT . INT  (6)
+
+	INT  shift 27
+	.  error
+
+
+state 24
+	cell : LBRACKET INT . COMMA INT RBRACKET  (10)
+
+	COMMA  shift 28
+	.  error
+
+
+state 25
+	program : INT DIMENSIONS OF config END opt_statements EOF .  (1)
+
+	.  reduce 1
+
+
+state 26
+	statement : cell ASSIGN . expression  (9)
+
+	LBRACKET  shift 18
+	INT  shift 29
+	.  error
+
+	cell  goto 30
+	expression  goto 31
+
+
+state 27
+	field : ID OF INT DOT_DOT INT .  (6)
+
+	.  reduce 6
+
+
+state 28
+	cell : LBRACKET INT COMMA . INT RBRACKET  (10)
+
+	INT  shift 32
+	.  error
+
+
+state 29
+	expression : INT .  (12)
+
+	.  reduce 12
+
+
+state 30
+	expression : cell .  (11)
+
+	.  reduce 11
+
+
+state 31
+	statement : cell ASSIGN expression .  (9)
+
+	.  reduce 9
+
+
+state 32
+	cell : LBRACKET INT COMMA INT . RBRACKET  (10)
+
+	RBRACKET  shift 33
+	.  error
+
+
+state 33
+	cell : LBRACKET INT COMMA INT RBRACKET .  (10)
+
+	.  reduce 10
+
+
+15 terminals, 10 nonterminals
+14 grammar rules, 34 states
