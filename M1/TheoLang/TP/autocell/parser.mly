@@ -43,7 +43,7 @@ let rec make_when f ws =
 
 /* keywords */
 %token DIMENSIONS
-
+%token NOP
 %token END
 %token OF
 
@@ -56,12 +56,13 @@ let rec make_when f ws =
 
 /* values */
 %token <string> ID
-%token<int> INT
+%token <int> INT
 
 %start program
 %type<Ast.prog> program
 
 %%
+
 
 program: INT DIMENSIONS OF config END opt_statements EOF
 	{
@@ -98,8 +99,9 @@ field:
 opt_statements:
 	/* empty */
 		{ NOP }
-|	statement
-		{ $1 }
+|   statement opt_statements
+		{ $1 $3 }
+
 ;
 
 
@@ -110,6 +112,8 @@ statement:
 			if (snd $1) != 0 then error "assigned Y must be 0";
 			SET_CELL (0, $3)
 		}
+|	ID ASSIGN expression { NOP }
+
 ;
 
 
@@ -128,6 +132,8 @@ expression:
 		{ CELL (0, fst $1, snd $1) }
 |	INT
 		{ CST $1 }
+| 	ID
+		{ NONE }
 ;
 
 

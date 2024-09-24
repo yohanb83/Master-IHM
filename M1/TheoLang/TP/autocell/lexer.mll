@@ -24,10 +24,12 @@ let line = ref 1
 
 let digit = ['0'-'9']
 let sign = ['+' '-']
+let chara = ['a'-'z' 'A'-'Z' '_']
 let dec = sign? digit+
+let id = chara (digit | chara)*
 
 rule token = parse
-	'\n'			{ incr line; token lexbuf }
+	'\n'			{ SEP; incr line; token lexbuf }
 |	[' ' '\t' '\r']	{ token lexbuf }
 |	"//"			{ ecom lexbuf }
 |	"#"				{ ecom lexbuf }
@@ -44,6 +46,7 @@ rule token = parse
 |	'['				{ LBRACKET }
 |	']'				{ RBRACKET }
 |	dec	as n		{ INT (int_of_string n) }
+|   id 	as c		{ ID c }			
 
 |	eof				{ EOF }
 |	_ as c			{ raise (LexerError (sprintf "illegal char '%c'" c)) }
@@ -52,3 +55,9 @@ and ecom = parse
 |	'\n'			{ incr line; token lexbuf }
 |	eof				{ EOF }
 |	_				{ ecom lexbuf }
+
+
+
+
+
+
