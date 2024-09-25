@@ -1,0 +1,38 @@
+1. A1-S1 Identifier les rôles/responsabilités
+	client
+	client privilegié
+	fournisseur
+	gérant du magasin
+	EXT Paypal
+	EXT livreur
+	[SYSTEME]
+
+2. A1-S2 Identifier les tâches
+	i) - s’inscrire à une vente
+	ii) - proposer des ventes 
+	iii) - informer les clients concernés d’une nouvelle vente
+	iv) - modifier les informations fournisseur
+	v) - s’inscrire comme client privilégié
+	vi) - valider des inscriptions privileges
+	vii) - valider une vente 
+	iix) - consulter une vente
+	ix) - payer une commande
+	x) - fournir une date de livraison
+
+
+3. A1-S3 Assigner les tâches
+	client : v
+	client privilegié : I, iix, ix (EXTPaypal)
+	fournisseur : ii, iv
+	gerant : vi, vii
+	EXT livreur : x
+	[SYS] : iii
+
+
+4. A1-S4 Modéliser les processus métiers
+	- 
+	
+	
+5. A1-S5 Modéliser les produits/ressources des tâches métiers
+
+6. A1-S6 Packager les diagrammes
