@@ -51,12 +51,18 @@ let rec make_when f ws =
 %token ASSIGN
 %token COMMA
 %token LBRACKET RBRACKET
+%token OPARA FPARA
 %token DOT_DOT
 %token DOT
+
+%token PLUS MINUS
+%token MULT DIV MOD
 
 /* values */
 %token <string> ID
 %token <int> INT
+
+%token 
 
 %start program
 %type<Ast.prog> program
@@ -100,10 +106,8 @@ opt_statements:
 	/* empty */
 		{ NOP }
 |   statement opt_statements
-		{ $1 $3 }
-
+		{ SEQ($1, $2) }
 ;
-
 
 statement:
 	cell ASSIGN expression
@@ -112,11 +116,9 @@ statement:
 			if (snd $1) != 0 then error "assigned Y must be 0";
 			SET_CELL (0, $3)
 		}
-|	ID ASSIGN expression { NOP }
-
+|	ID ASSIGN expression
+		{ NOP }
 ;
-
-
 
 cell:
 	LBRACKET INT COMMA INT RBRACKET
@@ -128,13 +130,19 @@ cell:
 ;
 
 expression:
-	cell
-		{ CELL (0, fst $1, snd $1) }
-|	INT
-		{ CST $1 }
-| 	ID
-		{ NONE }
-;
+	binary {NONE}
+|	atom {NONE}
 
+binary:
+	expression PLUS atom {NONE}
+|	expression MINUS atom {NONE}
+
+atom:
+	cell
+		{ CELL(0, fst $1, snd $1) }
+|	INT 
+		{CST $1; printf "%d\n" $1}
+|	ID	
+		{printf "%s\n" $1}
 
 

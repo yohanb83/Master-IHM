@@ -11,18 +11,24 @@
    6  field : ID OF INT DOT_DOT INT
 
    7  opt_statements :
-   8                 | statement SEP opt_statements
+   8                 | statement opt_statements
 
    9  statement : cell ASSIGN expression
   10            | ID ASSIGN expression
 
   11  cell : LBRACKET INT COMMA INT RBRACKET
 
-  12  expression : cell
-  13             | INT
-  14             | ID
+  12  expression : binary
+  13             | atom
 
-  15  %entry% : '\001' program
+  14  binary : expression PLUS atom
+  15         | expression MINUS atom
+
+  16  atom : cell
+  17       | INT
+  18       | ID
+
+  19  %entry% : '\001' program
 
 state 0
 	$accept : . %entry% $end  (0)
@@ -34,7 +40,7 @@ state 0
 
 
 state 1
-	%entry% : '\001' . program  (15)
+	%entry% : '\001' . program  (19)
 
 	INT  shift 3
 	.  error
@@ -56,9 +62,9 @@ state 3
 
 
 state 4
-	%entry% : '\001' program .  (15)
+	%entry% : '\001' program .  (19)
 
-	.  reduce 15
+	.  reduce 19
 
 
 state 5
@@ -186,10 +192,16 @@ state 20
 
 
 state 21
-	opt_statements : statement . SEP opt_statements  (8)
+	opt_statements : statement . opt_statements  (8)
+	opt_statements : .  (7)
 
-	SEP  shift 28
-	.  error
+	LBRACKET  shift 18
+	ID  shift 19
+	EOF  reduce 7
+
+	opt_statements  goto 28
+	statement  goto 21
+	cell  goto 22
 
 
 state 22
@@ -229,6 +241,8 @@ state 26
 
 	cell  goto 34
 	expression  goto 35
+	binary  goto 36
+	atom  goto 37
 
 
 state 27
@@ -238,16 +252,9 @@ state 27
 
 
 state 28
-	opt_statements : statement SEP . opt_statements  (8)
-	opt_statements : .  (7)
+	opt_statements : statement opt_statements .  (8)
 
-	LBRACKET  shift 18
-	ID  shift 19
-	EOF  reduce 7
-
-	opt_statements  goto 36
-	statement  goto 21
-	cell  goto 22
+	.  reduce 8
 
 
 state 29
@@ -259,7 +266,9 @@ state 29
 	.  error
 
 	cell  goto 34
-	expression  goto 37
+	expression  goto 38
+	binary  goto 36
+	atom  goto 37
 
 
 state 30
@@ -271,58 +280,112 @@ state 30
 state 31
 	cell : LBRACKET INT COMMA . INT RBRACKET  (11)
 
-	INT  shift 38
+	INT  shift 39
 	.  error
 
 
 state 32
-	expression : ID .  (14)
+	atom : ID .  (18)
 
-	.  reduce 14
+	.  reduce 18
 
 
 state 33
-	expression : INT .  (13)
+	atom : INT .  (17)
 
-	.  reduce 13
+	.  reduce 17
 
 
 state 34
-	expression : cell .  (12)
+	atom : cell .  (16)
 
-	.  reduce 12
+	.  reduce 16
 
 
 state 35
 	statement : ID ASSIGN expression .  (10)
+	binary : expression . PLUS atom  (14)
+	binary : expression . MINUS atom  (15)
 
-	.  reduce 10
+	PLUS  shift 40
+	MINUS  shift 41
+	EOF  reduce 10
+	LBRACKET  reduce 10
+	ID  reduce 10
 
 
 state 36
-	opt_statements : statement SEP opt_statements .  (8)
+	expression : binary .  (12)
 
-	.  reduce 8
+	.  reduce 12
 
 
 state 37
-	statement : cell ASSIGN expression .  (9)
+	expression : atom .  (13)
 
-	.  reduce 9
+	.  reduce 13
 
 
 state 38
-	cell : LBRACKET INT COMMA INT . RBRACKET  (11)
+	statement : cell ASSIGN expression .  (9)
+	binary : expression . PLUS atom  (14)
+	binary : expression . MINUS atom  (15)
 
-	RBRACKET  shift 39
-	.  error
+	PLUS  shift 40
+	MINUS  shift 41
+	EOF  reduce 9
+	LBRACKET  reduce 9
+	ID  reduce 9
 
 
 state 39
+	cell : LBRACKET INT COMMA INT . RBRACKET  (11)
+
+	RBRACKET  shift 42
+	.  error
+
+
+state 40
+	binary : expression PLUS . atom  (14)
+
+	LBRACKET  shift 18
+	ID  shift 32
+	INT  shift 33
+	.  error
+
+	cell  goto 34
+	atom  goto 43
+
+
+state 41
+	binary : expression MINUS . atom  (15)
+
+	LBRACKET  shift 18
+	ID  shift 32
+	INT  shift 33
+	.  error
+
+	cell  goto 34
+	atom  goto 44
+
+
+state 42
 	cell : LBRACKET INT COMMA INT RBRACKET .  (11)
 
 	.  reduce 11
 
 
-17 terminals, 10 nonterminals
-16 grammar rules, 40 states
+state 43
+	binary : expression PLUS atom .  (14)
+
+	.  reduce 14
+
+
+state 44
+	binary : expression MINUS atom .  (15)
+
+	.  reduce 15
+
+
+23 terminals, 12 nonterminals
+20 grammar rules, 45 states

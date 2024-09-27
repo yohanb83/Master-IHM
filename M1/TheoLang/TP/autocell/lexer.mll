@@ -24,12 +24,13 @@ let line = ref 1
 
 let digit = ['0'-'9']
 let sign = ['+' '-']
-let chara = ['a'-'z' 'A'-'Z' '_']
 let dec = sign? digit+
+
+let chara = ['a'-'z' 'A'-'Z' '_']
 let id = chara (digit | chara)*
 
 rule token = parse
-	'\n'			{ SEP; incr line; token lexbuf }
+	'\n'			{ incr line; token lexbuf }
 |	[' ' '\t' '\r']	{ token lexbuf }
 |	"//"			{ ecom lexbuf }
 |	"#"				{ ecom lexbuf }
@@ -38,6 +39,16 @@ rule token = parse
 
 |	"end"			{ END }
 |	"of"			{ OF }
+
+|	"+"				{ PLUS }
+|	"-"				{ MINUS }
+|	"("				{ OPARA }
+|	")"				{ FPARA }
+|	"*"				{ MULT }
+|	"/"				{ DIV }
+|	"%"				{ MOD }
+
+
 
 |	":="			{ ASSIGN }
 |	'.'				{ DOT }
