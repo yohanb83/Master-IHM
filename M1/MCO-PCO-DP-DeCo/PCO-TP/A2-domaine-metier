@@ -1,0 +1,21 @@
+A2-S1 Identifier concepts métiers
+ - Client
+ - Client privilegié
+ - Vente
+ - Article
+ - Fournisseur
+ - Activité
+ - Commande
+ - Gérant
+ 
+
+A2-S2 Identifier relations métiers
+	Activite -> Client priv
+	Client priv -> Commande
+	Articles -> Commande
+	Articles -> Vente
+	Activite -> Vente
+	Heure -> Vente
+	Vente -> Fournisseur
+	Materiel -> Fournisseur
+

@@ -1,0 +1,35 @@
+<html>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <div id="app">
+      <ul>
+        <li>Creer un input pour saisir la longueur</li>
+        <li>Creer un input pour saisir la largeur</li>
+        <li>
+          Creer un bouton pour calculer le resultat et l'afficher dans un champ
+          texte
+        </li>
+      </ul>
+      <pre>
+        Rappel: Surface d'un rectangle : longueur * largeur
+      </pre>
+      <input type="text" v-model="longueur" />
+      <input type="text" v-model="largeur" />
+      <p>Surface={{calc}}</p>
+    </div>
+    <script>
+      new Vue({
+        el: "#app",
+        data: {
+          longueur:0,
+          largeur:0,
+        },
+        computed: {
+          calc: function(){
+            return Number(this.longueur)*Number(this.largeur);
+          },
+        }
+      });
+    </script>
+  </body>
+</html>
