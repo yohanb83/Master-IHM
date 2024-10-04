@@ -1,4 +1,4 @@
-	.meta source "\"autos/shift.auto\""
+	.meta source "\"autos/neg.auto\""
 	.meta fields "[{ \"name\": \"\", \"num\": 0, \"lo\": 0, \"hi\": 1 }]"
 	invoke 1, 2, 3
 	seti r4, #1

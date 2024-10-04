@@ -110,15 +110,15 @@ opt_statements:
 ;
 
 statement:
-	cell ASSIGN expression
+	cell ASSIGN e
 		{
 			if (fst $1) != 0 then error "assigned x must be 0";
 			if (snd $1) != 0 then error "assigned Y must be 0";
 			SET_CELL (0, $3)
 		}
-|	ID ASSIGN expression
+|	ID ASSIGN e
 		{ NOP }
-;
+
 
 cell:
 	LBRACKET INT COMMA INT RBRACKET
@@ -127,22 +127,26 @@ cell:
 			if ($4 < -1) || ($4 > 1) then error "x out of range";
 			($2, $4)
 		}
+
+e:
+	e PLUS t { NONE }
+|	e MINUS t { NONE }
+|	t { NONE }
+
+t:
+	t MULT f { NONE }
+|	t DIV f { NONE }
+|	t MOD f { NONE }
+|	f { NONE }
+
+f:
+	cell { CELL(0, fst $1, snd $1) }
+|	MINUS f { NONE }
+|	INT { CST $1 }
+|	ID { NONE }
+|	OPARA e FPARA { NONE }
 ;
 
-expression:
-	binary {NONE}
-|	atom {NONE}
 
-binary:
-	expression PLUS atom {NONE}
-|	expression MINUS atom {NONE}
-
-atom:
-	cell
-		{ CELL(0, fst $1, snd $1) }
-|	INT 
-		{CST $1; printf "%d\n" $1}
-|	ID	
-		{printf "%s\n" $1}
 
 

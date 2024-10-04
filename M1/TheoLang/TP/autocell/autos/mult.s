@@ -1,5 +1,5 @@
-	.meta source "\"autos/shift.auto\""
-	.meta fields "[{ \"name\": \"\", \"num\": 0, \"lo\": 0, \"hi\": 1 }]"
+	.meta source "\"autos/mult.auto\""
+	.meta fields "[{ \"name\": \"\", \"num\": 0, \"lo\": 0, \"hi\": 9 }]"
 	invoke 1, 2, 3
 	seti r4, #1
 	seti r0, #0

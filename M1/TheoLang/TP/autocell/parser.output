@@ -13,22 +13,27 @@
    7  opt_statements :
    8                 | statement opt_statements
 
-   9  statement : cell ASSIGN expression
-  10            | ID ASSIGN expression
+   9  statement : cell ASSIGN e
+  10            | ID ASSIGN e
 
   11  cell : LBRACKET INT COMMA INT RBRACKET
 
-  12  expression : binary
-  13             | atom
+  12  e : e PLUS t
+  13    | e MINUS t
+  14    | t
 
-  14  binary : expression PLUS atom
-  15         | expression MINUS atom
+  15  t : t MULT f
+  16    | t DIV f
+  17    | t MOD f
+  18    | f
 
-  16  atom : cell
-  17       | INT
-  18       | ID
+  19  f : cell
+  20    | MINUS f
+  21    | INT
+  22    | ID
+  23    | OPARA e FPARA
 
-  19  %entry% : '\001' program
+  24  %entry% : '\001' program
 
 state 0
 	$accept : . %entry% $end  (0)
@@ -40,7 +45,7 @@ state 0
 
 
 state 1
-	%entry% : '\001' . program  (19)
+	%entry% : '\001' . program  (24)
 
 	INT  shift 3
 	.  error
@@ -62,9 +67,9 @@ state 3
 
 
 state 4
-	%entry% : '\001' program .  (19)
+	%entry% : '\001' program .  (24)
 
-	.  reduce 19
+	.  reduce 24
 
 
 state 5
@@ -178,7 +183,7 @@ state 18
 
 
 state 19
-	statement : ID . ASSIGN expression  (10)
+	statement : ID . ASSIGN e  (10)
 
 	ASSIGN  shift 26
 	.  error
@@ -205,7 +210,7 @@ state 21
 
 
 state 22
-	statement : cell . ASSIGN expression  (9)
+	statement : cell . ASSIGN e  (9)
 
 	ASSIGN  shift 29
 	.  error
@@ -232,17 +237,19 @@ state 25
 
 
 state 26
-	statement : ID ASSIGN . expression  (10)
+	statement : ID ASSIGN . e  (10)
 
 	LBRACKET  shift 18
-	ID  shift 32
-	INT  shift 33
+	OPARA  shift 32
+	MINUS  shift 33
+	ID  shift 34
+	INT  shift 35
 	.  error
 
-	cell  goto 34
-	expression  goto 35
-	binary  goto 36
-	atom  goto 37
+	cell  goto 36
+	e  goto 37
+	t  goto 38
+	f  goto 39
 
 
 state 27
@@ -258,17 +265,19 @@ state 28
 
 
 state 29
-	statement : cell ASSIGN . expression  (9)
+	statement : cell ASSIGN . e  (9)
 
 	LBRACKET  shift 18
-	ID  shift 32
-	INT  shift 33
+	OPARA  shift 32
+	MINUS  shift 33
+	ID  shift 34
+	INT  shift 35
 	.  error
 
-	cell  goto 34
-	expression  goto 38
-	binary  goto 36
-	atom  goto 37
+	cell  goto 36
+	e  goto 40
+	t  goto 38
+	f  goto 39
 
 
 state 30
@@ -280,112 +289,264 @@ state 30
 state 31
 	cell : LBRACKET INT COMMA . INT RBRACKET  (11)
 
-	INT  shift 39
+	INT  shift 41
 	.  error
 
 
 state 32
-	atom : ID .  (18)
+	f : OPARA . e FPARA  (23)
 
-	.  reduce 18
+	LBRACKET  shift 18
+	OPARA  shift 32
+	MINUS  shift 33
+	ID  shift 34
+	INT  shift 35
+	.  error
+
+	cell  goto 36
+	e  goto 42
+	t  goto 38
+	f  goto 39
 
 
 state 33
-	atom : INT .  (17)
+	f : MINUS . f  (20)
 
-	.  reduce 17
+	LBRACKET  shift 18
+	OPARA  shift 32
+	MINUS  shift 33
+	ID  shift 34
+	INT  shift 35
+	.  error
+
+	cell  goto 36
+	f  goto 43
 
 
 state 34
-	atom : cell .  (16)
+	f : ID .  (22)
 
-	.  reduce 16
+	.  reduce 22
 
 
 state 35
-	statement : ID ASSIGN expression .  (10)
-	binary : expression . PLUS atom  (14)
-	binary : expression . MINUS atom  (15)
+	f : INT .  (21)
 
-	PLUS  shift 40
-	MINUS  shift 41
+	.  reduce 21
+
+
+state 36
+	f : cell .  (19)
+
+	.  reduce 19
+
+
+state 37
+	statement : ID ASSIGN e .  (10)
+	e : e . PLUS t  (12)
+	e : e . MINUS t  (13)
+
+	PLUS  shift 44
+	MINUS  shift 45
 	EOF  reduce 10
 	LBRACKET  reduce 10
 	ID  reduce 10
 
 
-state 36
-	expression : binary .  (12)
-
-	.  reduce 12
-
-
-state 37
-	expression : atom .  (13)
-
-	.  reduce 13
-
-
 state 38
-	statement : cell ASSIGN expression .  (9)
-	binary : expression . PLUS atom  (14)
-	binary : expression . MINUS atom  (15)
+	e : t .  (14)
+	t : t . MULT f  (15)
+	t : t . DIV f  (16)
+	t : t . MOD f  (17)
 
-	PLUS  shift 40
-	MINUS  shift 41
+	MULT  shift 46
+	DIV  shift 47
+	MOD  shift 48
+	EOF  reduce 14
+	LBRACKET  reduce 14
+	FPARA  reduce 14
+	PLUS  reduce 14
+	MINUS  reduce 14
+	ID  reduce 14
+
+
+state 39
+	t : f .  (18)
+
+	.  reduce 18
+
+
+state 40
+	statement : cell ASSIGN e .  (9)
+	e : e . PLUS t  (12)
+	e : e . MINUS t  (13)
+
+	PLUS  shift 44
+	MINUS  shift 45
 	EOF  reduce 9
 	LBRACKET  reduce 9
 	ID  reduce 9
 
 
-state 39
+state 41
 	cell : LBRACKET INT COMMA INT . RBRACKET  (11)
 
-	RBRACKET  shift 42
+	RBRACKET  shift 49
 	.  error
-
-
-state 40
-	binary : expression PLUS . atom  (14)
-
-	LBRACKET  shift 18
-	ID  shift 32
-	INT  shift 33
-	.  error
-
-	cell  goto 34
-	atom  goto 43
-
-
-state 41
-	binary : expression MINUS . atom  (15)
-
-	LBRACKET  shift 18
-	ID  shift 32
-	INT  shift 33
-	.  error
-
-	cell  goto 34
-	atom  goto 44
 
 
 state 42
+	e : e . PLUS t  (12)
+	e : e . MINUS t  (13)
+	f : OPARA e . FPARA  (23)
+
+	FPARA  shift 50
+	PLUS  shift 44
+	MINUS  shift 45
+	.  error
+
+
+state 43
+	f : MINUS f .  (20)
+
+	.  reduce 20
+
+
+state 44
+	e : e PLUS . t  (12)
+
+	LBRACKET  shift 18
+	OPARA  shift 32
+	MINUS  shift 33
+	ID  shift 34
+	INT  shift 35
+	.  error
+
+	cell  goto 36
+	t  goto 51
+	f  goto 39
+
+
+state 45
+	e : e MINUS . t  (13)
+
+	LBRACKET  shift 18
+	OPARA  shift 32
+	MINUS  shift 33
+	ID  shift 34
+	INT  shift 35
+	.  error
+
+	cell  goto 36
+	t  goto 52
+	f  goto 39
+
+
+state 46
+	t : t MULT . f  (15)
+
+	LBRACKET  shift 18
+	OPARA  shift 32
+	MINUS  shift 33
+	ID  shift 34
+	INT  shift 35
+	.  error
+
+	cell  goto 36
+	f  goto 53
+
+
+state 47
+	t : t DIV . f  (16)
+
+	LBRACKET  shift 18
+	OPARA  shift 32
+	MINUS  shift 33
+	ID  shift 34
+	INT  shift 35
+	.  error
+
+	cell  goto 36
+	f  goto 54
+
+
+state 48
+	t : t MOD . f  (17)
+
+	LBRACKET  shift 18
+	OPARA  shift 32
+	MINUS  shift 33
+	ID  shift 34
+	INT  shift 35
+	.  error
+
+	cell  goto 36
+	f  goto 55
+
+
+state 49
 	cell : LBRACKET INT COMMA INT RBRACKET .  (11)
 
 	.  reduce 11
 
 
-state 43
-	binary : expression PLUS atom .  (14)
+state 50
+	f : OPARA e FPARA .  (23)
 
-	.  reduce 14
+	.  reduce 23
 
 
-state 44
-	binary : expression MINUS atom .  (15)
+state 51
+	e : e PLUS t .  (12)
+	t : t . MULT f  (15)
+	t : t . DIV f  (16)
+	t : t . MOD f  (17)
+
+	MULT  shift 46
+	DIV  shift 47
+	MOD  shift 48
+	EOF  reduce 12
+	LBRACKET  reduce 12
+	FPARA  reduce 12
+	PLUS  reduce 12
+	MINUS  reduce 12
+	ID  reduce 12
+
+
+state 52
+	e : e MINUS t .  (13)
+	t : t . MULT f  (15)
+	t : t . DIV f  (16)
+	t : t . MOD f  (17)
+
+	MULT  shift 46
+	DIV  shift 47
+	MOD  shift 48
+	EOF  reduce 13
+	LBRACKET  reduce 13
+	FPARA  reduce 13
+	PLUS  reduce 13
+	MINUS  reduce 13
+	ID  reduce 13
+
+
+state 53
+	t : t MULT f .  (15)
 
 	.  reduce 15
 
 
+state 54
+	t : t DIV f .  (16)
+
+	.  reduce 16
+
+
+state 55
+	t : t MOD f .  (17)
+
+	.  reduce 17
+
+
 23 terminals, 12 nonterminals
-20 grammar rules, 45 states
+25 grammar rules, 56 states
