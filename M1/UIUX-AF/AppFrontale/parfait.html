@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <script>
+        function calculNombreParfait(limit) {
+            for(let i = 2; i < limit; i ++){
+                let diviseurs = [];
+                for (let j = 1; j<i; j++){
+                    if (i % j == 0){
+                        diviseurs.push(j); 
+                    }
+                }
+                let sum = 0;
+                for(let j of diviseurs){
+                    sum += j;
+                }
+                if ( i == sum ){
+                    alert ("${i} est un nombre parfait");
+                }
+            }
+        }
+
+        calculNombreParfait(10000);
+        alert("Fin du calcul des nombres parfaits");
+        </script>
+    </body>
+</html>
