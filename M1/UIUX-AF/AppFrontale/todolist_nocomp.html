@@ -1,0 +1,35 @@
+<html>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <div id="app">
+      <input type="text" v-model="newTodo" />
+      <input type="button" value="Ajouter" @click="addTodo" />
+      <br />
+      Il y a actuellement {{ size }} todos
+      <ul>
+        <li v-for="todo in todos">
+          {{ todo }}
+        </li>
+      </ul>
+
+      <span v-if="size > 5" style="color: red;">Attention a la surcharge</span>
+    </div>
+
+    <script>
+      new Vue({
+        el: "#app",
+        data: { todos: [], newTodo: "" },
+        methods: {
+          addTodo: function (event) {
+            this.todos.push(this.newTodo);
+          }
+        },
+        computed: {
+          size() {
+            return this.todos.length;
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

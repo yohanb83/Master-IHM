@@ -1,28 +1,33 @@
 <!DOCTYPE html>
 <html>
-    <body>
-        <script>
-        function calculNombreParfait(limit) {
-            for(let i = 2; i < limit; i ++){
-                let diviseurs = [];
-                for (let j = 1; j<i; j++){
-                    if (i % j == 0){
-                        diviseurs.push(j); 
-                    }
-                }
-                let sum = 0;
-                for(let j of diviseurs){
-                    sum += j;
-                }
-                if ( i == sum ){
-                    alert ("${i} est un nombre parfait");
-                }
+  <body>
+    <script>
+      function calculNombreParfait(limit) {
+        for (var i = 4; i < limit; i++) {
+          var diviseurs = [];
+
+          // Calcul des diviseurs du nombre i
+          for (var n = 1; n < i; n++) {
+            if (i % n == 0) {
+              diviseurs.push(n);
             }
+          }
+
+          // Calcul de la somme des diviseurs
+          var somme = 0;
+          for (var n of diviseurs) {
+            somme = somme + parseInt(n);
+          }
+
+          // Vérification du nombre parfait
+          if (somme == i) {
+            alert(i + " est un nombre parfait");
+          }
         }
+      }
 
-        calculNombreParfait(10000);
-        alert("Fin du calcul des nombres parfaits");
-        </script>
-    </body>
-</html>   
-
+      calculNombreParfait(10000);
+      alert("Fin du calcul des nombres parfaits");
+    </script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+<html>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <div id="app">
+      <input type="text" v-model="longueur" />
+      <input type="text" v-model="largeur" />
+      <input
+        type="button"
+        @click="result = longueur * largeur"
+        value="Calculer"
+      />
+      <br />
+      Resultat : {{ result }}
+    </div>
+    <script>
+      new Vue({
+        el: "#app",
+        data: { longueur: 0, largeur: 0, result: 0 }
+      });
+    </script>
+  </body>
+</html>
