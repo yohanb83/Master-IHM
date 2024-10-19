@@ -44,6 +44,12 @@ let rec make_when f ws =
 /* keywords */
 %token DIMENSIONS
 %token NOP
+
+%token IF
+%token ELSE
+%token ELSIF
+%token THEN 
+
 %token END
 %token OF
 
@@ -57,6 +63,7 @@ let rec make_when f ws =
 
 %token PLUS MINUS
 %token MULT DIV MOD
+%token EQ NE LT GT LE GE
 
 /* values */
 %token <string> ID
@@ -69,13 +76,11 @@ let rec make_when f ws =
 
 %%
 
-
 program: INT DIMENSIONS OF config END opt_statements EOF
 	{
 		if $1 != 2 then error "only 2 dimension accepted";
 		($4, $6)
 	}
-;
 
 config:
 	INT DOT_DOT INT
@@ -85,14 +90,13 @@ config:
 		}
 |	fields
 		{ set_fields $1 }
-;
 
 fields:
 	field
 		{ [$1] }
 |	fields COMMA field
-		{$3 :: $1 }
-;
+		{$3 :: $1}
+
 
 field:
 	ID OF INT DOT_DOT INT
@@ -100,14 +104,13 @@ field:
 			if $3 >= $5 then error "illegal field values";
 			($1, ($3, $5))
 		}
-;
 
 opt_statements:
 	/* empty */
 		{ NOP }
 |   statement opt_statements
 		{ SEQ($1, $2) }
-;
+
 
 statement:
 	cell ASSIGN e
@@ -117,7 +120,23 @@ statement:
 			SET_CELL (0, $3)
 		}
 |	ID ASSIGN e
-		{ NOP }
+		{ SET_VAR(declare_var($1), $3) }
+|	IF condition THEN opt_statements next_ { IF_THEN($2, $4, $5) }
+
+next_: 
+	ELSIF condition THEN opt_statements next_ { IF_THEN($2, $4, $5) }
+|	ELSE opt_statements END { $2 }
+|	END { NOP }
+
+condition:
+	e EQ e { COMP(COMP_EQ, $1, $3) }
+|	e NE e { COMP(COMP_NE, $1, $3) }
+|	e LT e { COMP(COMP_LT, $1, $3) }
+| 	e GT e { COMP(COMP_GT, $1, $3) }
+|	e LE e { COMP(COMP_LE, $1, $3) }
+|	e GE e { COMP(COMP_GE, $1, $3) }
+
+
 
 
 cell:
@@ -129,22 +148,22 @@ cell:
 		}
 
 e:
-	e PLUS t { NONE }
-|	e MINUS t { NONE }
-|	t { NONE }
+	e PLUS t { BINOP(OP_ADD, $1, $3) }
+|	e MINUS t { BINOP(OP_SUB, $1, $3) }
+|	t { $1 }
 
 t:
-	t MULT f { NONE }
-|	t DIV f { NONE }
-|	t MOD f { NONE }
-|	f { NONE }
+	t MULT f { BINOP(OP_MUL, $1, $3) }
+|	t DIV f { BINOP(OP_DIV, $1, $3) }
+|	t MOD f { BINOP(OP_MOD, $1, $3) }
+|	f { $1 }
 
 f:
 	cell { CELL(0, fst $1, snd $1) }
-|	MINUS f { NONE }
+|	MINUS f { NEG($2) }
 |	INT { CST $1 }
-|	ID { NONE }
-|	OPARA e FPARA { NONE }
+|	ID { VAR(get_var($1))}
+|	OPARA e FPARA { $2 }
 ;
 
 

@@ -26,8 +26,9 @@ let digit = ['0'-'9']
 let sign = ['+' '-']
 let dec = sign? digit+
 
-let chara = ['a'-'z' 'A'-'Z' '_']
-let id = chara (digit | chara)*
+let chara = ['a'-'z' 'A'-'Z']
+let spec = ['_']
+let id = chara (digit | chara | spec)*
 
 rule token = parse
 	'\n'			{ incr line; token lexbuf }
@@ -37,8 +38,20 @@ rule token = parse
 
 |	"dimensions"	{ DIMENSIONS }
 
+|	"if"			{ IF }
+|	"else"			{ ELSE }
+|	"elsif"			{ ELSIF }
+|	"then"			{ THEN }
+
 |	"end"			{ END }
 |	"of"			{ OF }
+
+|	"="				{ EQ }
+|	"!="			{ NE }
+|	"<"				{ LT }
+|	">"				{ GT }
+|   "<="			{ LE }
+|	">="			{ GE }
 
 |	"+"				{ PLUS }
 |	"-"				{ MINUS }
@@ -47,8 +60,6 @@ rule token = parse
 |	"*"				{ MULT }
 |	"/"				{ DIV }
 |	"%"				{ MOD }
-
-
 
 |	":="			{ ASSIGN }
 |	'.'				{ DOT }
