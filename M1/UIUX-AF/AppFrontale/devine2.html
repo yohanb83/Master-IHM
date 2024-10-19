@@ -1,0 +1,38 @@
+<html>
+    <body>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <div id="app">
+        <input type="text" v-model="guess" />
+        <button @click="check">Tip</button>
+        <hr />
+        <div v-show="showTip">
+            {{ guess < deviner ? "C'est plus" : "C'est moins" }}
+        </div>
+        <div v-show="guess == deviner">
+            C'est le bon nombre !!!
+        </div>
+        <hr />
+        <p>Hint : to guess = {{ deviner }}</p>
+        </div>
+        <script>
+        new Vue({
+            el: "#app",
+            data: {
+            deviner: parseInt(Math.random() * 100),
+            guess: undefined,
+            showTip: false
+            },
+            methods: {
+            check: async function () {
+                await new Promise((resolve) => setTimeout(() => resolve(), 500));
+                this.showTip = this.guess != this.deviner;
+                if (this.showTip) {
+                await new Promise((resolve) => setTimeout(() => resolve(), 5000));
+                this.showTip = false;
+                }
+            }
+            }
+        });
+        </script>
+    </body>
+</html>
