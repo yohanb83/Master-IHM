@@ -121,6 +121,8 @@ statement:
 		}
 |	ID ASSIGN e
 		{ SET_VAR(declare_var($1), $3) }
+
+		
 |	IF condition THEN opt_statements next_ { IF_THEN($2, $4, $5) }
 
 next_: 
