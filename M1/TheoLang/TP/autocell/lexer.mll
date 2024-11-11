@@ -42,6 +42,8 @@ rule token = parse
 |	"else"			{ ELSE }
 |	"elsif"			{ ELSIF }
 |	"then"			{ THEN }
+|	"when"			{ WHEN }
+|	"otherwise"		{ OTHERWISE }
 
 |	"end"			{ END }
 |	"of"			{ OF }

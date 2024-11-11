@@ -49,6 +49,8 @@ let rec make_when f ws =
 %token ELSE
 %token ELSIF
 %token THEN 
+%token WHEN 
+%token OTHERWISE
 
 %token END
 %token OF
@@ -60,6 +62,7 @@ let rec make_when f ws =
 %token OPARA FPARA
 %token DOT_DOT
 %token DOT
+
 
 %token PLUS MINUS
 %token MULT DIV MOD
@@ -119,11 +122,56 @@ statement:
 			if (snd $1) != 0 then error "assigned Y must be 0";
 			SET_CELL (0, $3)
 		}
-|	ID ASSIGN e
-		{ SET_VAR(declare_var($1), $3) }
-
-		
+|	ID ASSIGN e	{ SET_VAR(declare_var($1), $3) }
 |	IF condition THEN opt_statements next_ { IF_THEN($2, $4, $5) }
+
+|	ID ASSIGN when_ { make_when(fonc e -> SET_VAR(declare_var($1, e), $3) )}
+|	cell ASSIGN when_
+		{
+			if (fst $1) != 0 then error "assigned x must be 0";
+			if (snd $1) != 0 then error "assigned Y must be 0";
+			make_when( fonc e -> SET_CELL(0, e), $3)
+		}
+
+when_:
+	e WHEN condition COMMA when_ { ($1, $3) :: $5 }
+	e OTHERWISE { [($1, NO_COND)] }
+
+/*  cell ASSIGN when_ {
+		if (fst $1) != 0 then error "assigned x must be 0";
+		if (snd $1) != 0 then error "assigned Y must be 0";
+		let( ) = $3 in
+		IF_THEN( , , )
+	} 
+|	ID ASSIGN when_ { NOP }
+  ID ASSIGN when_ { IF_THEN( , , ) } 
+
+statement:
+	cell ASSIGN e
+		{
+			if (fst $1) != 0 then error "assigned x must be 0";
+			if (snd $1) != 0 then error "assigned Y must be 0";
+			SET_CELL (0, $3)
+		}
+|	cell ASSIGN e WHEN condition COMMA when_
+		{
+			if (fst $1) != 0 then error "assigned x must be 0";
+			if (snd $1) != 0 then error "assigned Y must be 0";
+			IF_THEN($5, SET_CELL(0, $3), $1 ASSIGN $3)
+		}
+|	ID ASSIGN e	{ SET_VAR(declare_var($1), $3) }
+|	ID ASSIGN when_ {
+		let (cond, expr, next) = $3 in
+		IF_THEN(cond, SET_VAR(declare_var($1), expr), $1 ASSIGN next)
+	}
+|	IF condition THEN opt_statements next_ { IF_THEN($2, $4, $5) }
+
+when_:
+	e WHEN condition COMMA when_ {
+		let (cond, expr, next) = $5 in
+		IF_THEN(cond, SET_VAR
+	}
+|	e OTHERWISE { $1 }*/
 
 next_: 
 	ELSIF condition THEN opt_statements next_ { IF_THEN($2, $4, $5) }
@@ -137,9 +185,6 @@ condition:
 | 	e GT e { COMP(COMP_GT, $1, $3) }
 |	e LE e { COMP(COMP_LE, $1, $3) }
 |	e GE e { COMP(COMP_GE, $1, $3) }
-
-
-
 
 cell:
 	LBRACKET INT COMMA INT RBRACKET
