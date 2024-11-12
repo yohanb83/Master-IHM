@@ -105,4 +105,4 @@ def traitement_nosym(M, I, J, C, objSize):
 
 
 if __name__ == "__main__":
-    traitement("u120_00.bpa", sym=True)
+    traitement("u40_00.bpa", sym=True)
