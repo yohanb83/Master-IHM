@@ -58,19 +58,18 @@ def traitement_sym(M, I, J, C, objSize):
     #Variables
     u = {}
     for i in I:
-        for j in J:
+        for j in range(i, len(objSize)):
             u[i, j] = M.addVar(f"u{i}{j}", vtype="B")
     #Objectif 
     M.setObjective(sum(u[i, i] for i in I), "minimize")
     #Contraintes
     for j in J:
-        M.addCons(sum(u[i, j] for i in J) == 1)   
+        M.addCons(sum(u[i, j] for i in range(j+1)) == 1)   
     for i in I:
-        M.addCons(sum(objSize[j] * u[i, j] for j in J) <= C * u[i, i])
+        M.addCons( sum(objSize[j] * u[i, j] for j in range(i, len(objSize))) <= C * u[i, i])
     M.optimize()
     print("Nombre de boites ->", M.getObjVal())
     print("Affichage de la repartition dans les boites indisponible")
-
 
 def traitement_nosym(M, I, J, C, objSize):
     """Question 6.3 - partie 2"""
@@ -105,4 +104,5 @@ def traitement_nosym(M, I, J, C, objSize):
 
 
 if __name__ == "__main__":
-    traitement("u40_00.bpa", sym=True)
+    #print(lecture("u20_00.bpa"))
+    traitement("u120_00.bpa", sym=True)

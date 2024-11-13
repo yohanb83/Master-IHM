@@ -70,10 +70,6 @@ def traitement(filename=None):
     # 3) la somme des objet d'une boite ne doit pas dépasser la capacité
     for j in J:
         M.addCons(sum(objSize[i] * x[i, j] for i in I) <= C*y[j])
-    # 4) symetrie
-    for j in J[1:]:
-        M.addCons(y[j] - y[j-1] <= 0)
-
 
     #Resolution
     M.optimize()

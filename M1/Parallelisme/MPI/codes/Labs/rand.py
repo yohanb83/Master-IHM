@@ -8,7 +8,6 @@ if __name__ == "__main__":
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
 
-
     # try with and without commenting the next line
     #np.random.seed(0)
     numbers = np.random.randint(100, size=10, dtype='i')
