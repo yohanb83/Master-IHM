@@ -1,42 +1,62 @@
 <template>
   <div>
     <div class="col">
-      <new-message @messageSubmit="messageSubmitHandler"/>
+      <new-message @newMessage="onNewMessage"/>
     </div>
     <div class="col">
-      TODO ex 2
+      <message-preview :msg="item" v-for="item in messages" :key="item.id" @selectMessage="onMessageSelected"/>
+      Total : {{ count }}
     </div>
     <div class="col">
-      TODO ex 3
+      <div v-if="selected">
+        <message-detail :msg="selectedMessage"/>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import NewMessage from "@/components/NewMessage";
+import MessagePreview from "@/components/MessagePreview";
+import MessageDetail from "@/components/MessageDetail";
 
 export default {
   name: 'App',
-
   components: {
-    NewMessage,
+    MessageDetail,
+    MessagePreview,
+    NewMessage
   },
-
   data: function () {
-      return {
-        messages: [],
-        selected: null,
-      };
-    },
-
+    return {
+      messages: [],
+      selected: null
+    }
+  },
   methods: {
-    messageSubmitHandler : function(content){
-      console.log(content.titre + ": " + content.contenu)
+    onNewMessage: function (val) {
+      this.messages.push({
+        titre: val.titre,
+        texte: val.texte,
+        date: new Date(),
+        id: this.messages.length,
+        view: false
+      });
     },
+    onMessageSelected: function (val) {
+      this.selected = val;
+      this.selectedMessage.view = true;
+    }
+  },
+  computed: {
+    count: function () {
+      return this.messages.length;
+    },
+    selectedMessage: function () {
+      return this.messages.find(m => m.id === this.selected);
+    }
   }
-
 }
-
 </script>
 
 <style>

@@ -1,42 +1,128 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-                integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-                crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-                integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-                crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-                integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-                crossorigin="anonymous"></script>
-        <title>TP2 Frontend</title>
-    </head>
-    <body role="document">
-        <!-- Fixed navbar -->
-        <nav class="navbar navbar-dark bg-dark navbar-fixed-top">
-            <a class="navbar-brand" href="#">TP2 Frontend</a>
-        </nav>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <title>TP2 Frontend</title>
+</head>
+<body role="document">
 
-        <div class="container theme-showcase" role="main" style="width: 100%">
-            <div id="app">
-                <br/>
-                <!-- TODO -->
+<!-- Fixed navbar -->
+<nav class="navbar navbar-dark bg-dark navbar-fixed-top">
+    <a class="navbar-brand" href="#">TP2 Frontend</a>
+</nav>
+
+<div class="container theme-showcase" role="main" style="width: 100%">
+    <div id="app">
+        <br/>
+        <div class="card" style="width: 13rem;display: inline-block;vertical-align: top" v-for="item in ingredients"
+             v-bind:key="item.id">
+            <img class="card-img-top" style="height: 230px"
+                 :src="item.image">
+            <div class="card-body">
+                <h5 class="card-title">{{ item.id }} ({{ item.quantite }})</h5>
+                <p class="card-text">{{ item.description }}</p>
+                <div class="btn-group">
+                    <button class="btn btn-primary" @click="addIngredient(item.id)" :disabled="item.quantite >= 3">
+                        Ajouter
+                    </button>
+                    <button class="btn btn-danger" @click="removeIngredient(item.id)" :disabled="item.quantite <= 0">
+                        Supprimer
+                    </button>
+                </div>
             </div>
         </div>
-        <script>
-            new Vue({
-                el: "#app",
-                data: {
-                    ingredients: [/* todo */],
+        <hr/>
+        Prendre en menu <input type="checkbox" v-model="menu"/>
+        <div v-if="menu">
+            <input type="radio" name="accompagnement"> Frites <br/>
+            <input type="radio" name="accompagnement"> Potatoes
+            <br/><br/>
+            <input type="radio" name="boisson"> Coca<br/>
+            <input type="radio" name="boisson"> Eau
+        </div>
+        <hr/>
+        <p>
+            <b>Prix total : </b> {{ prixTotal.toFixed(2) }} €
+        </p>
+
+    </div>
+</div>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            ingredients: [
+                {
+                    id: 'Pain',
+                    image: 'https://halalcourses.com/1401-large_default/americana-pain-burger-avec-sesame.jpg',
+                    description: 'Pain fait maison, mais un peu surgelé quand même',
+                    quantite: 0,
+                    prix: 1
+                },
+                {
+                    id: 'Tomate',
+                    image: 'https://www.semaille.com/8596-thickbox_default/tomate-marmande.jpg',
+                    description: 'Tomate du jardin dans la cave et contaminée à l\'uranium',
+                    quantite: 0,
+                    prix: 0.5
+                },
+                {
+                    id: 'Salade',
+                    image: 'https://fr.frije.com/content/recipes/127/800-1.jpg',
+                    description: 'Salade verte plus trop verte, mais qui a été rincée',
+                    quantite: 0,
+                    prix: 0.15
+                },
+                {
+                    id: 'Oignon',
+                    image: 'https://www.aprifel.com/wp-content/uploads/2019/02/oignon.jpg',
+                    description: 'Oignon qui ne fait pas pleurer... bizarre, mais pourquoi pas.',
+                    quantite: 0,
+                    prix: 0.3
+                },
+                {
+                    id: 'Steak',
+                    image: 'https://www.cote2boeuf.fr/2487-large_default/steak-hache-de-boeuf-aubrac-150g.jpg',
+                    description: 'Steak OGM, provenant d\'une vache importée d\'on ne sait où',
+                    quantite: 0,
+                    prix: 2
+                },
+            ],
+            menu: false
+        },
+        computed: {
+            prixTotal: function () {
+                return this.ingredients.map(i => i.quantite * i.prix).reduce((a, b) => a + b, 0) + (this.menu ? 3 : 0);
+            }
+        },
+        methods: {
+            addIngredient: function (id) {
+                let i = this.ingredients.find(s => s.id === id);
+                if (i.quantite < 3) {
+                    i.quantite = i.quantite + 1;
                 }
-                /* TODO */
-            });
-        </script>
-    </body>
+            },
+            removeIngredient: function (id) {
+                let i = this.ingredients.find(s => s.id === id);
+                if (i.quantite > 0) {
+                    i.quantite = i.quantite - 1;
+                }
+            }
+        }
+    });
+</script>
+</body>
 </html>

@@ -1,14 +1,10 @@
-# TP 3 - Composants
+# M1 SDL/IHM - UE UX/UI
+## TP3 - Composants
 
-### LAST NAME : DOE
-### First name : John
-### TP group : 
-- [ ] TPA41
-- [ ] TPA42
-- [ ] TPA51
-- [ ] TPA52
-- [x] Not selected
-
+## Etudiant
+* NOM : Doe
+* Prénom : John
+* Groupe de TP :
 
 
 ## Project setup
