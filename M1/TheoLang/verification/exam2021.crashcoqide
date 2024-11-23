@@ -1,0 +1,14 @@
+Inductive exp :=
+| Const (c: nat)
+| Call (op: nat->nat->nat) (e1 e2: exp)
+| Test (op: nat->nat->bool) (e1 e2: exp)
+| Ite (c e1 e2: exp)
+| Error
+| Try (e1 e2: exp).
+
+Definition addition (n m : nat) : nat :=
+  n + m.
+
+(* Définition de la fonction exemple *)
+Definition exemple (e1 e2 : exp) : exp :=
+  Ite (Test (fun x y => negb (x <=? y)) e1 e2) Error (Call (fun x y => x - y) e1 e2).

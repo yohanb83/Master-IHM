@@ -100,7 +100,6 @@ Proof.
   reflexivity.
 Qed.
 
-
 (* Prove by induction on l1 the following property.
    We will use "destruct l2" to examine the cases l2 empty or non-empty,
    and the tactic "lia" *)
