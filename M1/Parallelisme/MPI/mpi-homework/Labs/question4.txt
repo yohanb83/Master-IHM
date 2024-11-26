@@ -1,0 +1,21 @@
+./n-bodies-perf.sh
+
+/!\ réalisé sur un Intel i3-1115G4 2 coeurs, il a donc été necessaire
+d'ajouter --oversubscribe aux scripts .sh
+
+size      seq                   par                   opt
+ 1     9.297735452651978     9.576413631439209     6.471104145050049  
+ 2     9.053889751434326     5.103060960769653     3.3675377368927  
+ 3    11.401588439941406     9.582121849060059     4.294837713241577  
+ 4     9.391035556793213     5.916789293289185     3.812506914138794  
+
+ 1. seq et par on un temps d'execution similaire car cela reviens au séquentiel
+ opt plus rapide car optimisation des index
+
+ 2. résultat prévisible par ~2fois plus rapide de seq, opt encore plus efficace
+
+ 3. plus longue execution pour par et opt ?? possiblement du à la parité du
+ nombre de processus, de l'utilisation de --oversubscribe et donc de la gestion
+ mémoire supplémentaire générée
+
+ 4. légèrement plus long que 2. gestion mémoire ? 
